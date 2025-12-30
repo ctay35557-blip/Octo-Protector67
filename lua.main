@@ -1,0 +1,110 @@
+-- ===============================
+-- OCTO ACCESS GATE (SAFE WRAPPER)
+-- ===============================
+
+local Players = game:GetService("Players")
+local MarketplaceService = game:GetService("MarketplaceService")
+
+local LP = Players.LocalPlayer
+local GAMEPASS_ID = 1536361999
+local VALID_KEY = "Octo_scripts"
+local DISCORD = "https://discord.gg/xtXPAbZ4sG"
+
+-- ===============================
+-- GAMEPASS CHECK
+-- ===============================
+
+local hasPass = false
+pcall(function()
+	hasPass = MarketplaceService:UserOwnsGamePassAsync(LP.UserId, GAMEPASS_ID)
+end)
+
+if not hasPass then
+	LP:Kick(
+		"You are not whitelisted.\n\nBuy access in our Discord:\n" .. DISCORD
+	)
+	return
+end
+
+-- ===============================
+-- KEY UI
+-- ===============================
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "OctoKeyUI"
+gui.ResetOnSpawn = false
+gui.Parent = LP:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0,360,0,210)
+frame.Position = UDim2.new(0.5,-180,0.5,-105)
+frame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+frame.Active = true
+frame.Draggable = true
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,16)
+
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1,0,0,40)
+title.BackgroundTransparency = 1
+title.Text = "Octo Access"
+title.Font = Enum.Font.GothamBlack
+title.TextSize = 22
+title.TextColor3 = Color3.new(1,1,1)
+
+local box = Instance.new("TextBox", frame)
+box.Position = UDim2.new(0,20,0,60)
+box.Size = UDim2.new(1,-40,0,40)
+box.PlaceholderText = "Enter Key"
+box.Text = ""
+box.Font = Enum.Font.Gotham
+box.TextSize = 18
+box.BackgroundColor3 = Color3.fromRGB(25,25,25)
+box.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", box).CornerRadius = UDim.new(0,12)
+
+local submit = Instance.new("TextButton", frame)
+submit.Position = UDim2.new(0,20,0,115)
+submit.Size = UDim2.new(1,-40,0,40)
+submit.Text = "UNLOCK"
+submit.Font = Enum.Font.GothamBold
+submit.TextSize = 18
+submit.BackgroundColor3 = Color3.fromRGB(40,40,40)
+submit.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", submit).CornerRadius = UDim.new(0,12)
+
+local getKey = Instance.new("TextButton", frame)
+getKey.Position = UDim2.new(0,20,0,160)
+getKey.Size = UDim2.new(1,-40,0,30)
+getKey.Text = "Get key from Discord"
+getKey.Font = Enum.Font.Gotham
+getKey.TextSize = 14
+getKey.BackgroundTransparency = 1
+getKey.TextColor3 = Color3.fromRGB(180,180,180)
+
+getKey.MouseButton1Click:Connect(function()
+	setclipboard(DISCORD)
+end)
+
+-- ===============================
+-- LOAD YOUR SCRIPT
+-- ===============================
+
+local function loadMainScript()
+	gui:Destroy()
+
+	-- 🔽 LOAD YOUR EXISTING SCRIPT HERE 🔽
+	-- OPTION A (recommended):
+	-- loadstring(game:HttpGet("YOUR_RAW_GITHUB_URL"))()
+
+	-- OPTION B:
+	-- paste your script contents directly below
+end
+
+submit.MouseButton1Click:Connect(function()
+	if box.Text == VALID_KEY then
+		loadMainScript()
+	else
+		box.Text = ""
+		box.PlaceholderText = "Invalid key"
+	end
+end)
